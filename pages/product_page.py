@@ -7,17 +7,10 @@ from selenium.webdriver.support import expected_conditions as EC
 class ProductPage(BasePage):
 
     def add_to_basket_and_get_code(self):
-        self.check_name_book()
-        self.check_price_book()
         self.go_to_add_to_basket()
         self.solve_quiz_and_get_code()
-
-    def check_name_book(self):
-        NAME = self.browser.find_element(*ProductPageLocators.NAME_BOOK)
-        assert "The shellcoder's handbook" in NAME.text, "There is no name like this"
-    def check_price_book(self):
-        PRICE = self.browser.find_element(*ProductPageLocators.PRICE_BOOK)
-        assert "9.99" in PRICE.text, "There is no price like this"
+        self.check_name_book()
+        self.check_price_book()
 
     def go_to_add_to_basket(self):
         try:
@@ -25,3 +18,15 @@ class ProductPage(BasePage):
             BUTTON_ADD_TO_BASKET.click()
         except TimeoutException:
             raise AssertionError("Не удалось найти кнопку 'Add to basket' или она не кликабельна")
+
+    def check_name_book(self):
+        NAME = self.browser.find_element(*ProductPageLocators.NAME_BOOK)
+        NAME_IN_CART = self.browser.find_element(*ProductPageLocators.NAME_BOOK_IN_CART)
+        print(str(NAME.text) + "-----" + str(NAME_IN_CART.text))
+        assert NAME.text in NAME_IN_CART.text, "Значение в корзине и в названии не совпадают"
+
+    def check_price_book(self):
+        PRICE = self.browser.find_element(*ProductPageLocators.PRICE_BOOK)
+        PRICE_IN_CART = self.browser.find_element(*ProductPageLocators.PRICE_BOOK_IN_CART)
+        print(str(PRICE.text) + "-----" + str(PRICE_IN_CART.text))
+        assert PRICE.text in PRICE_IN_CART.text, "Цена в корзине не соответствует цене товара"
