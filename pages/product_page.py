@@ -6,6 +6,11 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class ProductPage(BasePage):
 
+    def __init__(self, browser, url):
+        super().__init__(browser, url)
+        self.BUTTON_ADD_TO_BASKET = None
+        self.SUCCESS_MESSAGE = None
+
     def add_to_basket_and_get_code(self):
         self.go_to_add_to_basket()
         self.solve_quiz_and_get_code()
@@ -39,3 +44,29 @@ class ProductPage(BasePage):
         assert self.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE), (
             "Element is not desappeared"
         )
+
+    def should_be_product_added_to_basket(self):
+        self.should_be_correct_product_name()
+        self.should_be_correct_basket_total()
+
+    def should_be_correct_product_name(self):
+        product_name = self.browser.find_element(*ProductPageLocators.PRODUCT_NAME).text
+        message_name = self.browser.find_element(*ProductPageLocators.MESSAGE_PRODUCT_NAME).text
+        assert product_name == message_name, \
+            f"Product name doesn't match. Expected: {product_name}, got: {message_name}"
+
+    def should_be_correct_basket_total(self):
+        product_price = self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE).text
+        basket_total = self.browser.find_element(*ProductPageLocators.MESSAGE_BASKET_TOTAL).text
+        assert product_price == basket_total, \
+            f"Basket total doesn't match product price. Expected: {product_price}, got: {basket_total}"
+
+    def add_to_basket(self):
+        # Клик по кнопке добавления товара в корзину
+        add_button = self.browser.find_element(*ProductPageLocators.BUTTON_ADD_TO_BASKET)
+        add_button.click()
+
+    def should_not_be_success_message(self):
+        # Проверка отсутствия сообщения об успехе
+        assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
+            "Success message is presented, but should not be"
