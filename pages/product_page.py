@@ -30,3 +30,12 @@ class ProductPage(BasePage):
         PRICE_IN_CART = self.browser.find_element(*ProductPageLocators.PRICE_BOOK_IN_CART)
         print(str(PRICE.text) + "-----" + str(PRICE_IN_CART.text))
         assert PRICE.text in PRICE_IN_CART.text, "Цена в корзине не соответствует цене товара"
+
+    def should_be_message_about_success(self):
+        assert self.is_not_element_present(*ProductPageLocators.success_message), \
+            ("Success message is presented, but should not be")
+
+    def should_be_message_of_is_disappeared(self):
+        assert self.is_disappeared(*ProductPageLocators.success_message), (
+            "Element is not desappeared"
+        )
