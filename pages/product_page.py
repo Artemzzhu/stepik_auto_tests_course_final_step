@@ -70,3 +70,4 @@ class ProductPage(BasePage):
         # Проверка отсутствия сообщения об успехе
         assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
             "Success message is presented, but should not be"
+
